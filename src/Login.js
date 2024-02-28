@@ -1,11 +1,23 @@
 import './Login.css';
+import { useState } from "react";
+import axios from "axios";
 
 function Login() {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
-    function printToConsole(event) {
-        event.preventDefault();
-        console.log(document.getElementById("username").value);
-        console.log(document.getElementById("password").value);
+    const printToConsole = async (e) => {
+        e.preventDefault();
+        if (username && password) {
+            console.log(username, password);
+            const result = await axios.post('http://localhost:8080/user/authenticate'
+                , { username, password });
+            if (result.data || result.status == 200) {
+                const dataStr = JSON.stringify(result.data);
+                sessionStorage.setItem('token', dataStr)
+                console.log(sessionStorage.getItem('token'));
+            }
+        }
     };
 
     return (
@@ -14,11 +26,13 @@ function Login() {
                 <form id="myForm" onSubmit={printToConsole}>
                     <div className="inContainer">
                         <label htmlFor="username">Username</label>
-                        <input type="text" id="username" name="username" required />
+                        <input type="text" id="username" name="username" required
+                            value={username} onChange={(e) => setUsername(e.target.value)} />
                     </div>
                     <div className="inContainer">
                         <label htmlFor="password">Password</label>
-                        <input type="password" id="password" name="password" />
+                        <input type="password" id="password" name="password" required
+                            value={password} onChange={(e) => setPassword(e.target.value)} />
                     </div>
                     <div className="formContainerBtn">
                         <button type="submit" id="submitBtn" className="btnLogin">Login</button>
