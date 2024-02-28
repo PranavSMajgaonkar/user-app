@@ -1,12 +1,15 @@
 import './Login.css';
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navHistory = useNavigate();
 
-    const printToConsole = async (e) => {
+    //login form submit actions
+    const logInToDash = async (e) => {
         e.preventDefault();
         if (username && password) {
             console.log(username, password);
@@ -16,14 +19,20 @@ function Login() {
                 const dataStr = JSON.stringify(result.data);
                 sessionStorage.setItem('token', dataStr)
                 console.log(sessionStorage.getItem('token'));
+                navHistory('./dashboard')
             }
         }
     };
 
+    const goToDashBoard = () => {
+        console.log("click on register button");
+        navHistory('./registration')
+    }
+
     return (
         <div className="container">
             <div id="formContent">
-                <form id="myForm" onSubmit={printToConsole}>
+                <form id="myForm" onSubmit={logInToDash}>
                     <div className="inContainer">
                         <label htmlFor="username">Username</label>
                         <input type="text" id="username" name="username" required
@@ -36,7 +45,7 @@ function Login() {
                     </div>
                     <div className="formContainerBtn">
                         <button type="submit" id="submitBtn" className="btnLogin">Login</button>
-                        <button type="button" id="registerBtn" className="btnRegister">Register</button>
+                        <button type="button" id="registerBtn" className="btnRegister" onClick={goToDashBoard}>Register</button>
                     </div>
                 </form>
             </div>
